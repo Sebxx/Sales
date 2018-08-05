@@ -4,7 +4,7 @@
     using System.Net;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using Domain.Models;
+    using Common.Models;
     using Models;
 
     public class ProductsController : Controller

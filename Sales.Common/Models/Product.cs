@@ -1,4 +1,4 @@
-﻿namespace Sales.Domain.Models
+﻿namespace Sales.Common.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;

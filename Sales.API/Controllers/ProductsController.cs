@@ -8,6 +8,7 @@
     using System.Web.Http;
     using System.Web.Http.Description;
     using Domain.Models;
+    using Common.Models;
 
     public class ProductsController : ApiController
     {
