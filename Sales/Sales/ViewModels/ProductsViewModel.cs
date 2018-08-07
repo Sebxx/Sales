@@ -6,17 +6,22 @@
     using Common.Models;
     using Services;
 
-    public class ProductsViewModel
+    public class ProductsViewModel : BaseViewModel
     {
         private ApiService apiService;
 
-        public ObservableCollection<Product> Products { get; set; }
+        private ObservableCollection<Product> products;
+
+        public ObservableCollection<Product> Products
+        {
+            get { return this.products; }
+            set { this.SetValue(ref this.products, value); }
+        }
 
         public ProductsViewModel()
         {
             this.apiService = new ApiService();
             this.LoadProducts();
-
         }
 
         private async Task LoadProducts()
