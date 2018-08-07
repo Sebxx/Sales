@@ -3,14 +3,26 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Threading.Tasks;
+    using System.Windows.Input;
     using Common.Models;
+    using GalaSoft.MvvmLight.Command;
+    using Sales.Helpers;
     using Services;
+    using Xamarin.Forms;
 
     public class ProductsViewModel : BaseViewModel
     {
         private ApiService apiService;
 
         private ObservableCollection<Product> products;
+
+        private bool isRefreshing;
+
+        public bool IsRefreshing
+        {
+            get { return this.isRefreshing; }
+            set { this.SetValue(ref this.isRefreshing, value); }
+        }
 
         public ObservableCollection<Product> Products
         {
@@ -24,13 +36,34 @@
             this.LoadProducts();
         }
 
-        private async Task LoadProducts()
+        private async void LoadProducts()
         {
-            var response = await apiService.GetList<Product>("https://salesapiservices.azurewebsites.net", "/api", "/Products");
+            this.IsRefreshing = true;
+            var connection = await this.apiService.CheckConnection();
+            if (!connection.IsSuccess)
+            {
+                this.IsRefreshing = false;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
+                return;
+            }
+
+            var url = Application.Current.Resources["UrlAPI"].ToString();
+            var response = await this.apiService.GetList<Product>(url, "/api", "/Products");
             if (response.IsSuccess)
             {
                 var products = (List<Product>)response.Result;
                 this.Products = new ObservableCollection<Product>(products);
+            }
+
+            this.IsRefreshing = false;
+        }
+
+
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return new RelayCommand(LoadProducts);
             }
         }
     }
